@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile Info</title>
+</head>
+<body>
+<h2>Enter Your Details</h2>
+<form method="POST">
+    <input type="number" name="weight" placeholder="Weight (kg)" step="0.1" required><br>
+    <input type="number" name="height" placeholder="Height (cm)" step="0.1" required><br>
+    <input type="number" name="age" placeholder="Age" required><br>
+    <select name="gender" required>
+        <option>male</option>
+        <option>female</option>
+    </select><br>
+    <select name="activity" required>
+        <option value="low">Low</option>
+        <option value="moderate">Moderate</option>
+        <option value="high">High</option>
+    </select><br>
+    <select name="goal" required>
+        <option value="maintain">Maintain Weight</option>
+        <option value="fat_loss">Fat Loss</option>
+        <option value="weight_gain">Weight Gain</option>
+    </select><br>
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

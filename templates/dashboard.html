@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 900px; margin:auto; background:#fff; padding:20px; border-radius:10px; }
+        h1,h2,h3{ text-align:center; }
+        .log-form{ text-align:center; margin-bottom:20px; }
+        input,select,button{ padding:8px; margin:5px; }
+        ul{list-style:none;padding:0;}
+        li{background:#f0f0f0;margin:5px 0;padding:8px;border-radius:5px; display:flex; justify-content:space-between;}
+        .meal-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-top:20px;}
+        .card{background:#f9faf9;border-radius:8px;padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+    </style>
+</head>
+<body>
+<div class="container">
+<h1>Welcome, {{ user.username }}</h1>
+<h2>Daily Summary ({{ today }})</h2>
+<p><strong>Calories Consumed: {{ total_calories }} kcal</strong></p>
+
+<div class="log-form">
+<form method="POST" action="{{ url_for('log_food') }}">
+<input type="text" name="food_name" placeholder="Food name" required>
+<select name="meal_type">
+<option>Breakfast</option>
+<option>Lunch</option>
+<option>Dinner</option>
+</select>
+<button type="submit">Add Food</button>
+</form>
+</div>
+
+<h3>Today's Food Log</h3>
+<ul>
+{% for log in logs %}
+<li>{{ log.food_name }} - {{ log.calories }} kcal ({{ log.meal_type }})</li>
+{% endfor %}
+</ul>
+
+{% if meals %}
+<h3>Suggested Meals</h3>
+<div class="meal-grid">
+{% for meal_type, items in meals.items() %}
+<div class="card">
+<h4>{{ meal_type|capitalize }}</h4>
+<ul>
+{% for item in items %}
+<li>{{ item.food_name }} - {{ item.calories }} kcal</li>
+{% endfor %}
+</ul>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<p style="text-align:center;"><a href="{{ url_for('logout') }}">Logout</a></p>
+</div>
+</body>
+</html>

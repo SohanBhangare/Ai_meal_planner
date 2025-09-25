@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Meal Plan</title>
+</head>
+<body>
+    <h1>Your Meal Plan</h1>
+    <h2>Daily Calories Target: {{ daily_calories }} kcal</h2>
+    <p>Total from meals: {{ total_meal_calories }} kcal</p>
+
+    {% set today = date.today() %}
+
+    <h3>Breakfast ({{ totals.breakfast }} kcal)</h3>
+    <ul>
+    {% for item in meals.breakfast %}
+        <li>
+            {{ item.food_name }} - {{ item.calories }} kcal
+            <form method="POST" action="{{ url_for('log_meal') }}" style="display:inline;">
+                <input type="hidden" name="food_name" value="{{ item.food_name }}">
+                <input type="hidden" name="calories" value="{{ item.calories }}">
+                <input type="hidden" name="log_date" value="{{ today }}">
+                <button type="submit">Add to Log ✅</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <h3>Lunch ({{ totals.lunch }} kcal)</h3>
+    <ul>
+    {% for item in meals.lunch %}
+        <li>
+            {{ item.food_name }} - {{ item.calories }} kcal
+            <form method="POST" action="{{ url_for('log_meal') }}" style="display:inline;">
+                <input type="hidden" name="food_name" value="{{ item.food_name }}">
+                <input type="hidden" name="calories" value="{{ item.calories }}">
+                <input type="hidden" name="log_date" value="{{ today }}">
+                <button type="submit">Add to Log ✅</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <h3>Dinner ({{ totals.dinner }} kcal)</h3>
+    <ul>
+    {% for item in meals.dinner %}
+        <li>
+            {{ item.food_name }} - {{ item.calories }} kcal
+            <form method="POST" action="{{ url_for('log_meal') }}" style="display:inline;">
+                <input type="hidden" name="food_name" value="{{ item.food_name }}">
+                <input type="hidden" name="calories" value="{{ item.calories }}">
+                <input type="hidden" name="log_date" value="{{ today }}">
+                <button type="submit">Add to Log ✅</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <br>
+    <a href="/">Generate Again</a> | <a href="/dashboard">Go to Dashboard</a>
+</body>
+</html>
