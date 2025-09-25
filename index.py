@@ -5,6 +5,8 @@ from flask_bcrypt import Bcrypt
 from datetime import date
 import pandas as pd
 import os
+import meal_planner
+
 
 from models import db, User, CalorieLog
 
@@ -50,14 +52,30 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        preference = request.form.get("preference", "veg")
+        goal = request.form.get("goal", "maintain")
+
         if User.query.filter_by(username=username).first():
             return "User already exists!"
+
+        # set calorie goal by user goal
+        if goal == "loss":
+            calorie_goal = 1800
+        elif goal == "gain":
+            calorie_goal = 2500
+        else:
+            calorie_goal = 2000
+
         hashed_pw = bcrypt.generate_password_hash(password).decode("utf-8")
-        new_user = User(username=username, password=hashed_pw)
+        new_user = User(username=username, password=hashed_pw,
+                        preference=preference, goal=goal,
+                        calorie_goal=calorie_goal)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for("login"))
+
     return render_template("register.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -84,13 +102,16 @@ def dashboard():
     logs = CalorieLog.query.filter_by(user_id=current_user.id, log_date=date.today()).all()
     total_calories = sum(log.calories for log in logs)
 
-    return render_template(
-        "dashboard.html",
-        user=current_user,
-        today=date.today(),
-        logs=logs,
-        total_calories=total_calories
-    )
+    # Check if user has completed profile
+    if not all([current_user.height, current_user.weight, current_user.age, current_user.activity_level, current_user.preference, current_user.goal]):
+        return redirect(url_for("profile"))
+
+    # For now, we'll just use a default daily_calories value or calculate from your logic
+    daily_calories = 2000  # you can adjust based on user.goal if you want
+    meals = meal_planner.generate_daily_meal_plan(daily_calories, current_user.preference)
+
+    return render_template("dashboard.html", user=current_user, today=date.today(), logs=logs, total_calories=total_calories, meals=meals)
+
 
 @app.route("/log", methods=["POST"])
 @login_required
@@ -112,8 +133,30 @@ def log_food():
     db.session.commit()
     return redirect(url_for("dashboard"))
 
+@app.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    if request.method == "POST":
+        current_user.height = float(request.form["height"])
+        current_user.weight = float(request.form["weight"])
+        current_user.age = int(request.form["age"])
+        current_user.gender = request.form["gender"]
+        current_user.activity_level = request.form["activity_level"]
+        current_user.preference = request.form["preference"]
+        current_user.goal = request.form["goal"]
+
+        db.session.commit()
+        return redirect(url_for("dashboard"))
+
+    return render_template("profile.html", user=current_user)
+
+
 # ----------------------------- Run -----------------------------
 if __name__ == "__main__":
     with app.app_context():
+        # Drop all existing tables (WARNING: deletes all data!)
+        db.drop_all()
+        # Recreate tables according to your models
         db.create_all()
     app.run(debug=True)
+

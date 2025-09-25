@@ -1,29 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Profile Info</title>
-</head>
-<body>
-<h2>Enter Your Details</h2>
+<h2>Set Up Your Profile</h2>
 <form method="POST">
-    <input type="number" name="weight" placeholder="Weight (kg)" step="0.1" required><br>
-    <input type="number" name="height" placeholder="Height (cm)" step="0.1" required><br>
+    <input type="number" name="height" placeholder="Height (cm)" required><br>
+    <input type="number" name="weight" placeholder="Weight (kg)" required><br>
     <input type="number" name="age" placeholder="Age" required><br>
     <select name="gender" required>
-        <option>male</option>
-        <option>female</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
     </select><br>
-    <select name="activity" required>
-        <option value="low">Low</option>
+    <select name="activity_level" required>
+        <option value="sedentary">Sedentary</option>
         <option value="moderate">Moderate</option>
-        <option value="high">High</option>
+        <option value="active">Active</option>
+    </select><br>
+    <select name="preference" required>
+        <option value="veg">Veg</option>
+        <option value="nonveg">Non-Veg</option>
     </select><br>
     <select name="goal" required>
-        <option value="maintain">Maintain Weight</option>
-        <option value="fat_loss">Fat Loss</option>
-        <option value="weight_gain">Weight Gain</option>
+        <option value="maintain">Maintain</option>
+        <option value="lose">Lose</option>
+        <option value="gain">Gain</option>
     </select><br>
     <button type="submit">Save</button>
 </form>
-</body>
-</html>
