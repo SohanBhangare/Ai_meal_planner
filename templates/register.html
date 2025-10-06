@@ -1,13 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head><title>Register</title></head>
-<body>
-<h1>Register</h1>
 <form method="POST">
-  <input type="text" name="username" placeholder="Username" required><br><br>
-  <input type="password" name="password" placeholder="Password" required><br><br>
+  <label>Username:</label>
+  <input type="text" name="username" required><br>
+
+  <label>Password:</label>
+  <input type="password" name="password" required><br>
+
+  <label>Preference:</label>
+  <select name="preference">
+    <option value="veg">Vegetarian</option>
+    <option value="nonveg">Non-Vegetarian</option>
+  </select><br>
+
+  <label>Goal:</label>
+  <select name="goal">
+    <option value="loss">Weight Loss</option>
+    <option value="maintain">Maintain</option>
+    <option value="gain">Weight Gain</option>
+  </select><br>
+
   <button type="submit">Register</button>
 </form>
-<a href="/login">Login</a>
-</body>
-</html>

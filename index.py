@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
 from datetime import date
 import pandas as pd
 import os
 import meal_planner
 
-
-from models import db, User, CalorieLog
+from models import db, User, CalorieLog, DailyStats
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "supersecretkey"
@@ -22,11 +21,13 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# ----------------------------- Load CSVs for calorie lookup -----------------------------
+
+# ----------------------------- Load CSVs -----------------------------
 base_path = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(base_path, "Dataset")
 all_foods = pd.DataFrame()
@@ -42,10 +43,12 @@ for file in ["Breakfast.csv", "Lunch.csv", "Dinner.csv"]:
         df["calories"] = pd.to_numeric(df["calories"], errors="coerce").fillna(0).astype(int)
         all_foods = pd.concat([all_foods, df], ignore_index=True)
 
+
 # ----------------------------- Routes -----------------------------
 @app.route("/")
 def home():
     return redirect(url_for("login"))
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -58,7 +61,7 @@ def register():
         if User.query.filter_by(username=username).first():
             return "User already exists!"
 
-        # set calorie goal by user goal
+        # set calorie goal
         if goal == "loss":
             calorie_goal = 1800
         elif goal == "gain":
@@ -90,11 +93,13 @@ def login():
             return "Invalid credentials!"
     return render_template("login.html")
 
+
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("login"))
+
 
 @app.route("/dashboard")
 @login_required
@@ -102,15 +107,25 @@ def dashboard():
     logs = CalorieLog.query.filter_by(user_id=current_user.id, log_date=date.today()).all()
     total_calories = sum(log.calories for log in logs)
 
-    # Check if user has completed profile
-    if not all([current_user.height, current_user.weight, current_user.age, current_user.activity_level, current_user.preference, current_user.goal]):
-        return redirect(url_for("profile"))
+    # Fetch or create DailyStats
+    stats = DailyStats.query.filter_by(user_id=current_user.id, date=date.today()).first()
+    if not stats:
+        stats = DailyStats(user_id=current_user.id, date=date.today())
+        db.session.add(stats)
+        db.session.commit()
 
-    # For now, we'll just use a default daily_calories value or calculate from your logic
-    daily_calories = 2000  # you can adjust based on user.goal if you want
-    meals = meal_planner.generate_daily_meal_plan(daily_calories, current_user.preference)
+    meals = meal_planner.generate_daily_meal_plan(current_user.calorie_goal, current_user.preference)
 
-    return render_template("dashboard.html", user=current_user, today=date.today(), logs=logs, total_calories=total_calories, meals=meals)
+    return render_template(
+        "dashboard.html",
+        user=current_user,
+        today=date.today(),
+        logs=logs,
+        total_calories=total_calories,
+        calorie_goal=current_user.calorie_goal,
+        meals=meals,
+        stats=stats
+    )
 
 
 @app.route("/log", methods=["POST"])
@@ -133,6 +148,7 @@ def log_food():
     db.session.commit()
     return redirect(url_for("dashboard"))
 
+
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
@@ -151,12 +167,19 @@ def profile():
     return render_template("profile.html", user=current_user)
 
 
+@app.route("/update_stats", methods=["POST"])
+@login_required
+def update_stats():
+    stats = DailyStats.query.filter_by(user_id=current_user.id, date=date.today()).first()
+    if stats:
+        stats.water_intake = int(request.form["water_intake"])
+        stats.steps = int(request.form["steps"])
+        db.session.commit()
+    return redirect(url_for("dashboard"))
+
+
 # ----------------------------- Run -----------------------------
 if __name__ == "__main__":
     with app.app_context():
-        # Drop all existing tables (WARNING: deletes all data!)
-        db.drop_all()
-        # Recreate tables according to your models
         db.create_all()
     app.run(debug=True)
-

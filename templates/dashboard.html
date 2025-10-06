@@ -3,59 +3,109 @@
 <head>
     <title>Dashboard</title>
     <style>
-        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
-        .container { max-width: 900px; margin:auto; background:#fff; padding:20px; border-radius:10px; }
-        h1,h2,h3{ text-align:center; }
-        .log-form{ text-align:center; margin-bottom:20px; }
-        input,select,button{ padding:8px; margin:5px; }
-        ul{list-style:none;padding:0;}
-        li{background:#f0f0f0;margin:5px 0;padding:8px;border-radius:5px; display:flex; justify-content:space-between;}
-        .meal-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-top:20px;}
-        .card{background:#f9faf9;border-radius:8px;padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
+        h1, h2, h3 { text-align: center; }
+        .log-form { text-align: center; margin-bottom: 20px; }
+        input, select, button { padding: 8px; margin: 5px; }
+        ul { list-style: none; padding: 0; }
+        li { background: #f0f0f0; margin: 5px 0; padding: 8px; border-radius: 5px; display:flex; justify-content:space-between; }
+        .meal-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .card { background: #f9faf9; border-radius: 8px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .stats { display: flex; justify-content: space-around; margin-top: 20px; }
+        .stat-box { background: #f0f0f0; padding: 15px; border-radius: 8px; text-align: center; width: 45%; }
+        canvas { display: block; margin: 0 auto; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="container">
-<h1>Welcome, {{ user.username }}</h1>
-<h2>Daily Summary ({{ today }})</h2>
-<p><strong>Calories Consumed: {{ total_calories }} kcal</strong></p>
+    <h1>Welcome, {{ user.username }}</h1>
+    <h2>Daily Summary ({{ today }})</h2>
+    <p style="text-align:center;">
+        <strong>Calories Consumed: {{ total_calories }} kcal / Goal: {{ calorie_goal }} kcal</strong>
+    </p>
 
-<div class="log-form">
-<form method="POST" action="{{ url_for('log_food') }}">
-<input type="text" name="food_name" placeholder="Food name" required>
-<select name="meal_type">
-<option>Breakfast</option>
-<option>Lunch</option>
-<option>Dinner</option>
-</select>
-<button type="submit">Add Food</button>
-</form>
-</div>
+    <!-- Circular Calorie Counter -->
+    <canvas id="calorieChart" width="220" height="220"></canvas>
+    <script>
+    const ctx = document.getElementById('calorieChart');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Consumed', 'Remaining'],
+            datasets: [{
+                data: [{{ total_calories }}, Math.max({{ calorie_goal - total_calories }}, 0)],
+                backgroundColor: ['#36A2EB', '#E0E0E0'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: { legend: { display: false } }
+        }
+    });
+    </script>
 
-<h3>Today's Food Log</h3>
-<ul>
-{% for log in logs %}
-<li>{{ log.food_name }} - {{ log.calories }} kcal ({{ log.meal_type }})</li>
-{% endfor %}
-</ul>
+    <!-- Log Food -->
+    <div class="log-form">
+        <form method="POST" action="{{ url_for('log_food') }}">
+            <input type="text" name="food_name" placeholder="Food name" required>
+            <select name="meal_type">
+                <option>Breakfast</option>
+                <option>Lunch</option>
+                <option>Dinner</option>
+            </select>
+            <button type="submit">Add Food</button>
+        </form>
+    </div>
 
-{% if meals %}
-<h3>Suggested Meals</h3>
-<div class="meal-grid">
-{% for meal_type, items in meals.items() %}
-<div class="card">
-<h4>{{ meal_type|capitalize }}</h4>
-<ul>
-{% for item in items %}
-<li>{{ item.food_name }} - {{ item.calories }} kcal</li>
-{% endfor %}
-</ul>
-</div>
-{% endfor %}
-</div>
-{% endif %}
+    <!-- Food Log -->
+    <h3>Today's Food Log</h3>
+    <ul>
+    {% for log in logs %}
+        <li>{{ log.food_name }} - {{ log.calories }} kcal ({{ log.meal_type }})</li>
+    {% endfor %}
+    </ul>
 
-<p style="text-align:center;"><a href="{{ url_for('logout') }}">Logout</a></p>
+    <!-- Suggested Meals -->
+    {% if meals %}
+    <h3>Suggested Meals</h3>
+    <div class="meal-grid">
+        {% for meal, items in meals.items() %}
+        <div class="card">
+            <h4>{{ meal.capitalize() }}</h4>
+            <ul>
+                {% for item in items %}
+                <li>{{ item.food_name }} - {{ item.calories }} kcal</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Daily Stats -->
+    <h3 style="margin-top:30px;">Daily Stats</h3>
+    <div class="stats">
+        <div class="stat-box">
+            <form action="{{ url_for('update_stats') }}" method="POST">
+                <label>Water Intake (ml):</label><br>
+                <input type="number" name="water_intake" value="{{ stats.water_intake }}"><br>
+                <label>Steps:</label><br>
+                <input type="number" name="steps" value="{{ stats.steps }}"><br>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+        <div class="stat-box">
+            <p><strong>Water Today:</strong> {{ stats.water_intake }} ml</p>
+            <p><strong>Steps Today:</strong> {{ stats.steps }}</p>
+        </div>
+    </div>
+
+    <div style="text-align:center; margin-top:20px;">
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
 </div>
 </body>
 </html>

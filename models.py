@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from datetime import date
 
 db = SQLAlchemy()
 
@@ -17,13 +18,22 @@ class User(UserMixin, db.Model):
     preference = db.Column(db.String(10), nullable=True, default="veg")
     goal = db.Column(db.String(20), nullable=True, default="maintain")
 
-    # add this column
+    # calorie goal
     calorie_goal = db.Column(db.Integer, nullable=True)
+
 
 class CalorieLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     food_name = db.Column(db.String(100), nullable=False)
     calories = db.Column(db.Integer, nullable=False)
     meal_type = db.Column(db.String(20), nullable=False)
-    log_date = db.Column(db.Date, nullable=False)
+    log_date = db.Column(db.Date, nullable=False, default=date.today)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+
+class DailyStats(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False, default=date.today)
+    water_intake = db.Column(db.Integer, default=0)  # in ml
+    steps = db.Column(db.Integer, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
