@@ -6,7 +6,6 @@ from datetime import date
 import pandas as pd
 import os
 import meal_planner
-
 from models import db, User, CalorieLog, DailyStats
 
 app = Flask(__name__)
@@ -38,9 +37,12 @@ for file in ["Breakfast.csv", "Lunch.csv", "Dinner.csv"]:
         df.columns = df.columns.str.strip().str.lower()
         if "food_name" not in df.columns:
             df.rename(columns={df.columns[0]: "food_name"}, inplace=True)
-        if "calories" not in df.columns:
-            df["calories"] = 0
-        df["calories"] = pd.to_numeric(df["calories"], errors="coerce").fillna(0).astype(int)
+        expected_cols = ["calories","protein","carbs","fat","fiber","calcium","iron"]
+    for col in expected_cols:
+        if col not in df.columns:
+            df[col] = 0
+        df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
+
         all_foods = pd.concat([all_foods, df], ignore_index=True)
 
 
@@ -101,11 +103,114 @@ def logout():
     return redirect(url_for("login"))
 
 
+# @app.route("/dashboard")
+# @login_required
+# def dashboard():
+#     logs = CalorieLog.query.filter_by(user_id=current_user.id, log_date=date.today()).all()
+
+#     # Initialize totals
+#     total_calories = sum(log.calories for log in logs)
+#     total_protein = 0
+#     total_carbs = 0
+#     total_fat = 0
+#     total_fiber = 0
+#     total_calcium = 0
+#     total_iron = 0
+
+#     # Match each logged food to macros from dataset
+#     for log in logs:
+#         match = all_foods[all_foods["food_name"].str.lower() == log.food_name.lower()]
+#         if not match.empty:
+#             total_protein += float(match.iloc[0].get("protein", 0))
+#             total_carbs += float(match.iloc[0].get("carbs", 0))
+#             total_fat += float(match.iloc[0].get("fat", 0))
+#             total_fiber += float(match.iloc[0].get("fiber", 0))
+#             total_calcium += float(match.iloc[0].get("calcium", 0))
+#             total_iron += float(match.iloc[0].get("iron", 0))
+
+#     # Fetch or create DailyStats
+#     stats = DailyStats.query.filter_by(user_id=current_user.id, date=date.today()).first()
+#     if not stats:
+#         stats = DailyStats(user_id=current_user.id, date=date.today())
+#         db.session.add(stats)
+#         db.session.commit()
+
+#     # Generate meals
+#     meals = meal_planner.generate_daily_meal_plan(current_user.calorie_goal, current_user.preference)
+
+#     # --- Print values to console ---
+#     print("\n=== DASHBOARD DEBUG INFO ===")
+#     print(f"User: {current_user.username} | ID: {current_user.id}")
+#     print(f"Calorie Goal: {current_user.calorie_goal}")
+#     print(f"Date: {date.today()}")
+#     print(f"Logs ({len(logs)}):")
+#     for log in logs:
+#         print(f"  - {log.food_name}: {log.calories} cal")
+#     print(f"Totals → Calories: {total_calories}, Protein: {total_protein}g, Carbs: {total_carbs}g, Fat: {total_fat}g")
+#     print(f"Fiber: {total_fiber}g, Calcium: {total_calcium}mg, Iron: {total_iron}mg")
+#     print("============================\n")
+
+#     return render_template(
+#         "dashboard.html",
+#         user=current_user,
+#         today=date.today(),
+#         logs=logs,
+#         total_calories=total_calories,
+#         total_protein=total_protein,
+#         total_carbs=total_carbs,
+#         total_fat=total_fat,
+#         total_fiber=total_fiber,
+#         total_calcium=total_calcium,
+#         total_iron=total_iron,
+#         calorie_goal=current_user.calorie_goal,
+#         meals=meals,
+#         stats=stats
+#     )
+
 @app.route("/dashboard")
 @login_required
 def dashboard():
     logs = CalorieLog.query.filter_by(user_id=current_user.id, log_date=date.today()).all()
-    total_calories = sum(log.calories for log in logs)
+
+    # Initialize totals
+    total_calories = total_protein = total_carbs = total_fat = total_fiber = total_calcium = total_iron = 0.0
+
+    # Calculate totals by matching foods
+    log_data = []
+    for log in logs:
+        match = all_foods[all_foods["food_name"].str.lower() == log.food_name.lower()]
+        if not match.empty:
+            food_info = match.iloc[0]
+            protein = float(food_info.get("protein", 0))
+            carbs = float(food_info.get("carbs", 0))
+            fat = float(food_info.get("fat", 0))
+            fiber = float(food_info.get("fiber", 0))
+            calcium = float(food_info.get("calcium", 0))
+            iron = float(food_info.get("iron", 0))
+        else:
+            protein = carbs = fat = fiber = calcium = iron = 0
+
+        # Add to totals
+        total_calories += log.calories
+        total_protein += protein
+        total_carbs += carbs
+        total_fat += fat
+        total_fiber += fiber
+        total_calcium += calcium
+        total_iron += iron
+
+        # Collect data for template
+        log_data.append({
+            "food_name": log.food_name,
+            "meal_type": log.meal_type,
+            "calories": log.calories,
+            "protein": protein,
+            "carbs": carbs,
+            "fat": fat,
+            "fiber": fiber,
+            "calcium": calcium,
+            "iron": iron
+        })
 
     # Fetch or create DailyStats
     stats = DailyStats.query.filter_by(user_id=current_user.id, date=date.today()).first()
@@ -114,18 +219,34 @@ def dashboard():
         db.session.add(stats)
         db.session.commit()
 
+    # Generate meals
     meals = meal_planner.generate_daily_meal_plan(current_user.calorie_goal, current_user.preference)
+
+    # Print debug info
+    print(f"\n=== Dashboard Data for {date.today()} ===")
+    for log in log_data:
+        print(f"- {log['food_name']}: {log['calories']} cal, P:{log['protein']}g C:{log['carbs']}g F:{log['fat']}g")
+    print(f"TOTALS → Cal:{total_calories}, P:{total_protein}, C:{total_carbs}, F:{total_fat}, Fi:{total_fiber}, Ca:{total_calcium}, Fe:{total_iron}")
+    print("=========================================\n")
 
     return render_template(
         "dashboard.html",
         user=current_user,
         today=date.today(),
-        logs=logs,
+        logs=log_data,  # Pass computed macro info
         total_calories=total_calories,
+        total_protein=total_protein,
+        total_carbs=total_carbs,
+        total_fat=total_fat,
+        total_fiber=total_fiber,
+        total_calcium=total_calcium,
+        total_iron=total_iron,
         calorie_goal=current_user.calorie_goal,
         meals=meals,
         stats=stats
     )
+
+
 
 
 @app.route("/log", methods=["POST"])
