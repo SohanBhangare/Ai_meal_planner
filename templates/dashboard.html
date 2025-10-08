@@ -1,352 +1,446 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dashboard</title>
-<style>
-/* Base Styles */
-body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background: #e9ecef;
-    color: #212529;
-    padding: 20px;
-}
-
-/* Container */
-.container {
-    max-width: 960px;
-    margin: auto;
-    background: #ffffff;
-    padding: 20px 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(179, 13, 13, 0.05);
-}
-
-/* Headings */
-h1, h2, h3, h4 {
-    text-align: center;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 15px;
-}
-
-/* Form & Inputs */
-.log-form {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-input, select {
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 8px;
-    border: 1px solid #ced4da;
-    transition: 0.2s;
-}
-
-input:focus, select:focus {
-    outline: none;
-    border-color: #1d4ed8;
-    box-shadow: 0 0 6px rgba(29,78,216,0.25);
-}
-
-button {
-    background-color: #1d4ed8;
-    color: white;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 18px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-button:hover {
-    background-color: #2563eb;
-}
-
-/* Food Log List */
-ul {
-    list-style: none;
-    padding: 0;
-    margin-top: 10px;
-}
-
-li {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    background: #f8f9fa;
-    padding: 12px 15px;
-    margin: 6px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-    font-size: 14px;
-}
-
-li:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-/* Meal Cards */
-.meal-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.card {
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 15px 18px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-    transition: 0.2s;
-}
-
-.card h4 {
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #1f2937;
-}
-
-.card ul {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-.card li {
-    background: #f1f3f5;
-    padding: 8px 10px;
-    margin-bottom: 5px;
-    border-radius: 6px;
-    font-size: 13px;
-}
-
-/* Stats Boxes */
-.stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 25px;
-    justify-content: space-between;
-}
-
-.stat-box {
-    flex: 1 1 48%;
-    background: #1d4ed8;
-    color: white;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    transition: 0.2s;
-}
-
-.stat-box:hover {
-    background: #2563eb;
-    transform: translateY(-3px);
-}
-
-.stat-box input {
-    width: 70px;
-    border-radius: 6px;
-    border: none;
-    padding: 6px;
-    margin-top: 8px;
-    font-weight: 500;
-}
-
-/* Macros Table */
-.macros-summary {
-    margin-top: 25px;
-}
-
-.macro-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-}
-
-.macro-table th, .macro-table td {
-    text-align: center;
-    padding: 10px 12px;
-    font-size: 14px;
-}
-
-.macro-table th {
-    background: #1d4ed8;
-    color: white;
-    font-weight: 500;
-}
-
-.macro-table tr:nth-child(even) {
-    background: #f1f3f5;
-}
-
-/* Calorie Doughnut */
-canvas {
-    display: block;
-    margin: 15px auto;
-}
-
-/* Links */
-a {
-    color: #1d4ed8;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .stats, .stat-box {
-        flex: 1 1 100%;
-    }
-
-    .log-form {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-</style>
-
-
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Nutrition Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* All your CSS remains exactly the same */
+        :root {
+            --background: #0a0015;
+            --foreground: #e0d4ff;
+            --card: #130825;
+            --primary: #a855f7;
+            --primary-foreground: #ffffff;
+            --secondary: #6b21a8;
+            --accent: #9333ea;
+            --muted: #1e0f3a;
+            --muted-foreground: #a78bca;
+            --border: rgba(168, 85, 247, 0.3);
+            --input-background: #1a0d2e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            line-height: 1.5;
+            padding: 20px;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .bg-effect {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            top: 0;
+            left: 0;
+        }
+
+        .bg-orb-1 {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: pulse-scale-1 8s ease-in-out infinite;
+        }
+
+        .bg-orb-2 {
+            position: absolute;
+            bottom: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: pulse-scale-2 10s ease-in-out infinite;
+        }
+
+        @keyframes pulse-scale-1 {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+        }
+
+        @keyframes pulse-scale-2 {
+            0%, 100% { transform: scale(1.2); opacity: 0.2; }
+            50% { transform: scale(1); opacity: 0.4; }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), 0 0 40px rgba(168, 85, 247, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(168, 85, 247, 0.6), 0 0 60px rgba(168, 85, 247, 0.3);
+            }
+        }
+
+        .container {
+            max-width: 960px;
+            margin: auto;
+            background: var(--card);
+            padding: 20px 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(168, 85, 247, 0.5);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3), inset 0 0 15px rgba(168, 85, 247, 0.1);
+            position: relative;
+            z-index: 10;
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        h1, h2, h3, h4 {
+            text-align: center;
+            font-weight: 500;
+            color: var(--foreground);
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.5);
+        }
+
+        h2 { color: var(--primary); font-size: 1.5rem; }
+        h3 { font-size: 1.25rem; }
+
+        .log-form {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        input, select {
+            background: var(--input-background);
+            border: 1px solid var(--border);
+            color: var(--foreground);
+            padding: 10px 14px;
+            font-size: 14px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+        }
+
+        input::placeholder { color: var(--muted-foreground); }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+        }
+
+        button:active { transform: translateY(0); }
+
+        ul { list-style: none; padding: 0; margin-top: 10px; }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            background: var(--muted);
+            padding: 12px 15px;
+            margin: 6px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        li:hover {
+            transform: translateY(-2px) translateX(5px);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+            border-color: var(--primary);
+        }
+
+        li strong { color: var(--primary); }
+
+        .meal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--muted);
+            border-radius: 10px;
+            padding: 15px 18px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+            border-color: var(--primary);
+        }
+
+        .card h4 { margin-bottom: 10px; font-size: 16px; color: var(--primary); }
+
+        .card li {
+            background: var(--card);
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            border-radius: 6px;
+            font-size: 13px;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: space-between;
+        }
+
+        .stat-box {
+            flex: 1 1 48%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.5);
+        }
+
+        .stat-box input {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 70px;
+            border-radius: 6px;
+            padding: 6px;
+            margin-top: 8px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .stat-box button {
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 10px;
+        }
+
+        .macro-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .macro-table th, .macro-table td {
+            text-align: center;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+
+        .macro-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+
+        .macro-table td {
+            background: var(--muted);
+            border-top: 1px solid var(--border);
+        }
+
+        canvas {
+            display: block;
+            margin: 15px auto;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover { text-shadow: 0 0 10px rgba(168, 85, 247, 0.8); }
+
+        .summary-text {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .summary-text strong {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats, .stat-box { flex: 1 1 100%; }
+            .log-form { flex-direction: column; align-items: center; }
+            .container { padding: 15px 20px; }
+            h1 { font-size: 1.75rem; }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1>Welcome, {{ user.username }}</h1>
-    <h2>Daily Summary ({{ today }})</h2>
-    <p style="text-align:center;">
-        <strong>Calories Consumed: {{ total_calories }} kcal / Goal: {{ calorie_goal }} kcal</strong>
-    </p>
-
-    <!-- Circular Calorie Counter -->
-    <canvas id="calorieChart" width="220" height="220"></canvas>
-    <script>
-    const ctx = document.getElementById('calorieChart');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Consumed', 'Remaining'],
-            datasets: [{
-                data: [{{ total_calories }}, Math.max({{ calorie_goal - total_calories }}, 0)],
-                backgroundColor: ['#36A2EB', '#E0E0E0'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            cutout: '70%',
-            plugins: { legend: { display: false } }
-        }
-    });
-    </script>
-
-    <!-- Log Food -->
-    <div class="log-form">
-        <form method="POST" action="{{ url_for('log_food') }}">
-            <input type="text" name="food_name" placeholder="Food name" required>
-            <select name="meal_type">
-                <option>Breakfast</option>
-                <option>Lunch</option>
-                <option>Dinner</option>
-            </select>
-            <button type="submit">Add Food</button>
-        </form>
+    <div class="bg-effect">
+        <div class="bg-orb-1"></div>
+        <div class="bg-orb-2"></div>
     </div>
 
-    <!-- Food Log -->
-    <h3>Today's Food Log</h3>
-<ul>
-{% for log in logs %}
-    <li>
-        <div><strong>{{ log.food_name }}</strong> - {{ log.calories }} kcal ({{ log.meal_type }})</div>
-        <div style="font-size:0.9em; color:#555;">
-            Protein: {{ log.protein }}g |
-            Carbs: {{ log.carbs }}g |
-            Fat: {{ log.fat }}g |
-            Fiber: {{ log.fiber }}g |
-            Calcium: {{ log.calcium }}mg |
-            Iron: {{ log.iron }}mg
-        </div>
-    </li>
-{% endfor %}
-</ul>
+    <div class="container">
+        <h1>Welcome, {{ user.username }}</h1>
+        <h2>Daily Summary ({{ today }})</h2>
+        <p class="summary-text">
+            <strong>Calories Consumed: {{ total_calories }} kcal / Goal: {{ calorie_goal }} kcal</strong>
+        </p>
 
+        <canvas id="calorieChart" width="220" height="220"></canvas>
+        <script>
+        const ctx = document.getElementById('calorieChart');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Consumed', 'Remaining'],
+                datasets: [{
+                    data: [{{ total_calories }}, Math.max({{ calorie_goal - total_calories }}, 0)],
+                    backgroundColor: ['#a855f7', 'rgba(255, 255, 255, 0.1)'],
+                    borderColor: ['#a855f7', 'rgba(255, 255, 255, 0.2)'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 13, 46, 0.95)',
+                        titleColor: '#e0d4ff',
+                        bodyColor: '#e0d4ff',
+                        borderColor: 'rgba(168, 85, 247, 0.5)',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+        </script>
 
-    <div class="macros-summary">
-        <h3>Total Macros</h3>
-        <table class="macro-table">
-            <tr>
-                <th>Calories</th>
-                <th>Protein (g)</th>
-                <th>Carbs (g)</th>
-                <th>Fat (g)</th>
-                <th>Fiber (g)</th>
-                <th>Calcium (mg)</th>
-                <th>Iron (mg)</th>
-            </tr>
-            <tr>
-                <td>{{ total_calories }}</td>
-                <td>{{ total_protein }}</td>
-                <td>{{ total_carbs }}</td>
-                <td>{{ total_fat }}</td>
-                <td>{{ total_fiber }}</td>
-                <td>{{ total_calcium }}</td>
-                <td>{{ total_iron }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Suggested Meals -->
-    {% if meals %}
-    <h3>Suggested Meals</h3>
-    <div class="meal-grid">
-        {% for meal, items in meals.items() %}
-        <div class="card">
-            <h4>{{ meal.capitalize() }}</h4>
-            <ul>
-                {% for item in items %}
-                <li>{{ item.food_name }} - {{ item.calories }} kcal</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- Daily Stats -->
-    <h3 style="margin-top:30px;">Daily Stats</h3>
-    <div class="stats">
-        <div class="stat-box">
-            <form action="{{ url_for('update_stats') }}" method="POST">
-                <label>Water Intake (ml):</label><br>
-                <input type="number" name="water_intake" value="{{ stats.water_intake }}"><br>
-                <label>Steps:</label><br>
-                <input type="number" name="steps" value="{{ stats.steps }}"><br>
-                <button type="submit">Update</button>
+        <div class="log-form">
+            <form method="POST" action="{{ url_for('log_food') }}">
+                <input type="text" name="food_name" placeholder="Food name" required>
+                <select name="meal_type">
+                    <option>Breakfast</option>
+                    <option>Lunch</option>
+                    <option>Dinner</option>
+                </select>
+                <button type="submit">Add Food</button>
             </form>
         </div>
-        <div class="stat-box">
-            <p><strong>Water Today:</strong> {{ stats.water_intake }} ml</p>
-            <p><strong>Steps Today:</strong> {{ stats.steps }}</p>
+
+        <h3>Today's Food Log</h3>
+        <ul>
+        {% for log in logs %}
+            <li>
+                <div><strong>{{ log.food_name }}</strong> - {{ log.calories }} kcal ({{ log.meal_type }})</div>
+                <div style="font-size:0.9em; color: var(--muted-foreground);">
+                    Protein: {{ log.protein }}g |
+                    Carbs: {{ log.carbs }}g |
+                    Fat: {{ log.fat }}g |
+                    Fiber: {{ log.fiber }}g |
+                    Calcium: {{ log.calcium }}mg |
+                    Iron: {{ log.iron }}mg
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+
+        <div class="macros-summary">
+            <h3>Total Macros</h3>
+            <table class="macro-table">
+                <tr>
+                    <th>Calories</th>
+                    <th>Protein (g)</th>
+                    <th>Carbs (g)</th>
+                    <th>Fat (g)</th>
+                    <th>Fiber (g)</th>
+                    <th>Calcium (mg)</th>
+                    <th>Iron (mg)</th>
+                </tr>
+                <tr>
+                    <td>{{ total_calories }}</td>
+                    <td>{{ total_protein }}</td>
+                    <td>{{ total_carbs }}</td>
+                    <td>{{ total_fat }}</td>
+                    <td>{{ total_fiber }}</td>
+                    <td>{{ total_calcium }}</td>
+                    <td>{{ total_iron }}</td>
+                </tr>
+            </table>
+        </div>
+
+        {% if meals %}
+        <h3>Suggested Meals</h3>
+        <div class="meal-grid">
+            {% for meal, items in meals.items() %}
+            <div class="card">
+                <h4>{{ meal|capitalize }}</h4>
+                <ul>
+                    {% for item in items %}
+                    <li>{{ item.food_name }} - {{ item.calories }} kcal</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <h3 style="margin-top:30px;">Daily Stats</h3>
+        <div class="stats">
+            <div class="stat-box">
+                <form action="{{ url_for('update_stats') }}" method="POST">
+                    <label>Water Intake (ml):</label><br>
+                    <input type="number" name="water_intake" value="{{ stats.water_intake }}"><br>
+                    <label>Steps:</label><br>
+                    <input type="number" name="steps" value="{{ stats.steps }}"><br>
+                    <button type="submit">Update</button>
+                </form>
+            </div>
+            <div class="stat-box">
+                <p><strong>Water Today:</strong> {{ stats.water_intake }} ml</p>
+                <p><strong>Steps Today:</strong> {{ stats.steps }}</p>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin-top:20px;">
+            <a href="{{ url_for('logout') }}">Logout</a>
         </div>
     </div>
-
-    <div style="text-align:center; margin-top:20px;">
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </div>
-</div>
 </body>
 </html>
