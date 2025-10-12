@@ -1,22 +1,91 @@
-<form method="POST">
-  <label>Username:</label>
-  <input type="text" name="username" required><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Nutrition Tracker</title>
+    <style>
+        :root {
+            --background: #0a0015;
+            --foreground: #e0d4ff;
+            --card: #130825;
+            --primary: #a855f7;
+            --accent: #9333ea;
+            --border: rgba(168, 85, 247, 0.3);
+            --input-background: #1a0d2e;
+        }
 
-  <label>Password:</label>
-  <input type="password" name="password" required><br>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-  <label>Preference:</label>
-  <select name="preference">
-    <option value="veg">Vegetarian</option>
-    <option value="nonveg">Non-Vegetarian</option>
-  </select><br>
+        .container {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 450px;
+        }
 
-  <label>Goal:</label>
-  <select name="goal">
-    <option value="loss">Weight Loss</option>
-    <option value="maintain">Maintain</option>
-    <option value="gain">Weight Gain</option>
-  </select><br>
+        h1, h2 { text-align: center; margin-bottom: 20px; }
 
-  <button type="submit">Register</button>
-</form>
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--input-background);
+            color: var(--foreground);
+            font-size: 14px;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .footer-text a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer-text a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nutrition Tracker</h1>
+        <h2>Create Account</h2>
+
+        <form method="POST" action="/register">
+            <input type="text" name="username" placeholder="Enter your username" required>
+            <input type="password" name="password" placeholder="Enter your password" required>
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="footer-text">
+            Already have an account? <a href="/login">Login</a>
+        </div>
+    </div>
+</body>
+</html>

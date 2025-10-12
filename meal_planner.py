@@ -11,7 +11,7 @@ def load_csv(file_name):
     path = os.path.join(data_path, file_name)
     if not os.path.exists(path):
         return pd.DataFrame(columns=[
-            "food_name", "category", "calories", "protein", "carbs", "fat", 
+            "food_name", "category", "calories", "protein", "carbs", "fat",
             "fiber", "calcium", "iron"
         ])
 
@@ -55,15 +55,17 @@ def build_meal(df, target_calories):
     df = df.sample(frac=1).reset_index(drop=True)  # shuffle
     items = []
     total_cal = 0
-    max_items = min(4, len(df))
-    count = 0
 
-    while total_cal < target_calories and count < max_items:
-        row = df.iloc[count]
+    for i, row in df.iterrows():
+        if total_cal >= target_calories:
+            break
+
         remaining = target_calories - total_cal
-        factor = min(2, remaining / row["calories"]) if row["calories"] > 0 else 1
+        if row["calories"] == 0:
+            factor = 1
+        else:
+            factor = min(1.5, remaining / row["calories"])  # scale servings
 
-        # Scale all nutrients
         scaled_item = {
             "food_name": row["food_name"],
             "calories": int(row["calories"] * factor),
@@ -77,12 +79,14 @@ def build_meal(df, target_calories):
 
         items.append(scaled_item)
         total_cal += scaled_item["calories"]
-        count += 1
 
-    # Balance calories if under target
-    if total_cal < target_calories and items:
+    # If still under target, adjust first item's calories to match
+    if items and total_cal < target_calories:
         diff = target_calories - total_cal
-        items[0]["calories"] += diff  
+        items[0]["calories"] += diff
+        # Adjust macros proportionally
+        for key in ["protein", "carbs", "fat", "fiber", "calcium", "iron"]:
+            items[0][key] = round(items[0][key] * (1 + diff / items[0]["calories"]), 1)
 
     return items
 
@@ -100,23 +104,10 @@ def generate_daily_meal_plan(daily_calories=2000, preference="veg"):
     lunch = build_meal(ln, recommended["lunch"])
     dinner = build_meal(dn, recommended["dinner"])
 
-    def summarize(meals):
-        totals = {key: 0 for key in ["calories","protein","carbs","fat","fiber","calcium","iron"]}
-        for m in meals:
-            for key in totals:
-                totals[key] += m[key]
-        return {k: round(v, 1) for k, v in totals.items()}
-
     return {
         "breakfast": breakfast,
         "lunch": lunch,
         "dinner": dinner
-        # "totals": {
-        #     "breakfast": summarize(breakfast),
-        #     "lunch": summarize(lunch),
-        #     "dinner": summarize(dinner),
-        #     "day_total": summarize(breakfast + lunch + dinner),
-        # }
     }
 
 # ----------------------------- Run Example -----------------------------

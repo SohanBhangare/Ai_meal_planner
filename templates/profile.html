@@ -1,25 +1,101 @@
-<h2>Set Up Your Profile</h2>
-<form method="POST">
-    <input type="number" name="height" placeholder="Height (cm)" required><br>
-    <input type="number" name="weight" placeholder="Weight (kg)" required><br>
-    <input type="number" name="age" placeholder="Age" required><br>
-    <select name="gender" required>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-    </select><br>
-    <select name="activity_level" required>
-        <option value="sedentary">Sedentary</option>
-        <option value="moderate">Moderate</option>
-        <option value="active">Active</option>
-    </select><br>
-    <select name="preference" required>
-        <option value="veg">Veg</option>
-        <option value="nonveg">Non-Veg</option>
-    </select><br>
-    <select name="goal" required>
-        <option value="maintain">Maintain</option>
-        <option value="lose">Lose</option>
-        <option value="gain">Gain</option>
-    </select><br>
-    <button type="submit">Save</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Up Profile - Nutrition Tracker</title>
+    <style>
+        :root {
+            --background: #0a0015;
+            --foreground: #e0d4ff;
+            --card: #130825;
+            --primary: #a855f7;
+            --accent: #9333ea;
+            --border: rgba(168, 85, 247, 0.3);
+            --input-background: #1a0d2e;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--input-background);
+            color: var(--foreground);
+            font-size: 14px;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nutrition Tracker</h1>
+        <h2>Set Up Your Profile</h2>
+
+        <form method="POST">
+            <input type="number" name="height" placeholder="Height (cm)" value="{{ user.height or '' }}" required>
+            <input type="number" name="weight" placeholder="Weight (kg)" value="{{ user.weight or '' }}" required>
+            <input type="number" name="age" placeholder="Age" value="{{ user.age or '' }}" required>
+
+            <select name="gender" required>
+                <option value="male" {% if user.gender=='male' %}selected{% endif %}>Male</option>
+                <option value="female" {% if user.gender=='female' %}selected{% endif %}>Female</option>
+            </select>
+
+            <select name="activity_level" required>
+                <option value="sedentary" {% if user.activity_level=='sedentary' %}selected{% endif %}>Sedentary</option>
+                <option value="moderate" {% if user.activity_level=='moderate' %}selected{% endif %}>Moderate</option>
+                <option value="active" {% if user.activity_level=='active' %}selected{% endif %}>Active</option>
+            </select>
+
+            <select name="preference" required>
+                <option value="veg" {% if user.preference=='veg' %}selected{% endif %}>Vegetarian</option>
+                <option value="nonveg" {% if user.preference=='nonveg' %}selected{% endif %}>Non-Vegetarian</option>
+            </select>
+
+            <select name="goal" required>
+                <option value="maintain" {% if user.goal=='maintain' %}selected{% endif %}>Maintain Weight</option>
+                <option value="lose" {% if user.goal=='lose' %}selected{% endif %}>Lose Weight</option>
+                <option value="gain" {% if user.goal=='gain' %}selected{% endif %}>Gain Weight</option>
+            </select>
+
+            <button type="submit">Save & Continue</button>
+        </form>
+    </div>
+</body>
+</html>
