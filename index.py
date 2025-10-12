@@ -107,6 +107,7 @@ def logout():
     return redirect(url_for("login"))
 
 
+# ---------------- DASHBOARD ----------------
 @app.route("/dashboard")
 @login_required
 def dashboard():
@@ -154,17 +155,25 @@ def dashboard():
         db.session.add(stats)
         db.session.commit()
 
-    ADJUSTMENT_FACTOR = 0.1
-    calorie_diff = current_user.calorie_goal - total_calories
-    if calorie_diff > 0:
-        adjusted_goal = calorie_diff
+    # -------------------- Adaptive Next Day Goal --------------------
+    calorie_diff = total_calories - current_user.calorie_goal
+    adjustment_factor = 0.5  # adjust 50% of deviation
+
+    if calorie_diff > 0:  # Overeaten
+        next_day_goal = max(current_user.calorie_goal - (calorie_diff * adjustment_factor), 1200)
+    elif calorie_diff < 0:  # Undereaten
+        next_day_goal = min(current_user.calorie_goal + (abs(calorie_diff) * adjustment_factor), 3000)
     else:
-        adjusted_goal = max(current_user.calorie_goal + calorie_diff * ADJUSTMENT_FACTOR, 1200)
+        next_day_goal = current_user.calorie_goal
 
-    meals = meal_planner.generate_daily_meal_plan(adjusted_goal, current_user.preference)
+    next_day_goal = int(round(next_day_goal / 50) * 50)
 
-    # Precompute safe next day's recommended calorie goal to pass to template
-    recommended_calorie_goal = max(current_user.calorie_goal - max(total_calories - current_user.calorie_goal, 0), 1200)
+    # Update user's calorie goal for next day
+    current_user.calorie_goal = next_day_goal
+    db.session.commit()
+
+    # Generate adaptive meal plan
+    meals = meal_planner.generate_daily_meal_plan(next_day_goal, current_user.preference)
 
     return render_template(
         "dashboard.html",
@@ -179,7 +188,7 @@ def dashboard():
         total_calcium=total_calcium,
         total_iron=total_iron,
         calorie_goal=current_user.calorie_goal,
-        recommended_calorie_goal=recommended_calorie_goal,
+        next_day_goal=next_day_goal,
         meals=meals,
         stats=stats
     )

@@ -72,17 +72,13 @@
         <h2>Daily Summary ({{ today }})</h2>
         <p class="summary-text"><strong>Calories Consumed: {{ total_calories }} kcal / Goal: {{ calorie_goal }} kcal</strong></p>
 
-        <!-- Adaptive Message & Next Day Suggestion -->
         <p class="summary-text">
             {% if total_calories < calorie_goal %}
-                You are <strong>{{ calorie_goal - total_calories }} kcal</strong> below your goal. Suggested meals will help you reach it.
-                <br>Next day's calorie goal: <strong>{{ calorie_goal }}</strong> kcal
+                You are <strong>{{ calorie_goal - total_calories }} kcal</strong> below your goal.
             {% elif total_calories == calorie_goal %}
-                🎉 Congratulations! You hit your calorie goal today. Meals are suggested to maintain balance.
-                <br>Next day's calorie goal: <strong>{{ calorie_goal }}</strong> kcal
+                🎉 You hit your calorie goal today!
             {% else %}
-                ⚠️ You exceeded your calorie goal by <strong>{{ total_calories - calorie_goal }} kcal</strong>. Consider reducing calories tomorrow.
-                <br>Next day's recommended calorie goal: <strong>{{ recommended_calorie_goal }}</strong> kcal
+                ⚠️ You exceeded your goal by <strong>{{ total_calories - calorie_goal }} kcal</strong>.
             {% endif %}
         </p>
 
@@ -95,7 +91,7 @@
             data: {
                 labels: ['Consumed', 'Remaining'],
                 datasets: [{
-                    data: [{{ total_calories }}, Math.max({{ calorie_goal - total_calories }}, 0)],
+                    data: [{{ total_calories|default(0) }}, Math.max({{ calorie_goal|default(0) - total_calories|default(0) }}, 0)],
                     backgroundColor: ['#a855f7', 'rgba(255,255,255,0.1)'],
                     borderColor: ['#a855f7', 'rgba(255,255,255,0.2)'],
                     borderWidth: 2
@@ -103,7 +99,7 @@
             },
             options: {
                 cutout: '70%',
-                plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(26,13,46,0.95)', titleColor:'#e0d4ff', bodyColor:'#e0d4ff', borderColor:'rgba(168,85,247,0.5)', borderWidth:1 } }
+                plugins: { legend: { display: false } }
             }
         });
         </script>
@@ -132,6 +128,8 @@
                 <strong>{{ log.food_name }}</strong> ({{ log.meal_type }}) - {{ log.calories }} kcal
                 <span>P: {{ log.protein }} | C: {{ log.carbs }} | F: {{ log.fat }} | Fiber: {{ log.fiber }} | Ca: {{ log.calcium }} | Fe: {{ log.iron }}</span>
             </li>
+            {% else %}
+            <li>No foods logged yet.</li>
             {% endfor %}
         </ul>
 
@@ -145,13 +143,13 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ total_calories }}</td>
-                    <td>{{ total_protein }}</td>
-                    <td>{{ total_carbs }}</td>
-                    <td>{{ total_fat }}</td>
-                    <td>{{ total_fiber }}</td>
-                    <td>{{ total_calcium }}</td>
-                    <td>{{ total_iron }}</td>
+                    <td>{{ total_calories|default(0) }}</td>
+                    <td>{{ total_protein|default(0) }}</td>
+                    <td>{{ total_carbs|default(0) }}</td>
+                    <td>{{ total_fat|default(0) }}</td>
+                    <td>{{ total_fiber|default(0) }}</td>
+                    <td>{{ total_calcium|default(0) }}</td>
+                    <td>{{ total_iron|default(0) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -171,6 +169,8 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% else %}
+            <p style="text-align:center;">No meal plan suggestions available.</p>
             {% endfor %}
         </div>
 
@@ -180,14 +180,14 @@
             <div class="stat-box">
                 <h4>Water Intake (ml)</h4>
                 <form action="{{ url_for('update_stats') }}" method="POST">
-                    <input type="number" name="water_intake" value="{{ stats.water_intake }}" min="0">
+                    <input type="number" name="water_intake" value="{{ stats.water_intake|default(0) }}" min="0">
                     <button type="submit">Update</button>
                 </form>
             </div>
             <div class="stat-box">
                 <h4>Steps</h4>
                 <form action="{{ url_for('update_stats') }}" method="POST">
-                    <input type="number" name="steps" value="{{ stats.steps }}" min="0">
+                    <input type="number" name="steps" value="{{ stats.steps|default(0) }}" min="0">
                     <button type="submit">Update</button>
                 </form>
             </div>
@@ -200,13 +200,11 @@
                 var calendarEl = document.getElementById('calendar');
                 var calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
-                    themeSystem: 'standard',
                     events: '/calendar_data'
                 });
                 calendar.render();
             });
         </script>
-
     </div>
 </body>
 </html>
