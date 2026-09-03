@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package mealplanner;
+
+
+service MealService {
+
+    rpc GetMealNutrition(MealRequest)
+        returns (MealResponse);
+
+}
+
+
+message MealRequest {
+
+    string meal_name = 1;
+
+    int64 lamport_timestamp = 2;
+
+}
+
+
+message MealResponse {
+
+    string meal_name = 1;
+
+    double calories = 2;
+
+    double protein = 3;
+
+    double carbs = 4;
+
+    double fat = 5;
+
+    int64 lamport_timestamp = 6;
+
+    string status = 7;
+
+}

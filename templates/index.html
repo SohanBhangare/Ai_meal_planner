@@ -1,40 +1,6 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Meal Planner</title>
-</head>
-<body>
-    <h1>Generate Your Meal Plan</h1>
-    <form method="POST">
-        Weight (kg): <input type="number" name="weight" step="0.1" required><br>
-        Height (cm): <input type="number" name="height" step="0.1" required><br>
-        Age: <input type="number" name="age" required><br>
-        Gender: 
-        <select name="gender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-        </select><br>
-        Activity Level:
-        <select name="activity">
-            <option value="low">Low</option>
-            <option value="moderate">Moderate</option>
-            <option value="high">High</option>
-        </select><br>
-        Goal:
-        <select name="goal">
-            <option value="maintain">Maintain</option>
-            <option value="fat_loss">Fat Loss</option>
-            <option value="weight_gain">Weight Gain</option>
-        </select><br>
-        Diet:
-        <select name="diet">
-            <option value="vegetarian">Vegetarian</option>
-            <option value="non-vegetarian">Non-Vegetarian</option>
-        </select><br>
-        Dislikes (comma separated): <input type="text" name="dislikes"><br>
-        <input type="submit" value="Generate Meal Plan">
-    </form>
-    <br>
-    <a href="/dashboard">Go to Dashboard</a>
-</body>
-</html>
+<html><body>
+<h1>AI Meal & Calorie Tracker</h1>
+<a href="{{ url_for('register') }}">Register</a> |
+<a href="{{ url_for('login') }}">Login</a>
+</body></html>
