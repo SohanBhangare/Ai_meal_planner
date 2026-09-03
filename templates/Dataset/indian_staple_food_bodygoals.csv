@@ -1,0 +1,28 @@
+food_name,category,calories,protein,carbs,fat,tags,meal_type,goal
+Oats Porridge,Vegetarian,150,5.0,27.0,3.0,"high-protein,low-fat,breakfast",breakfast,weight_loss
+Poha,Vegetarian,130,3.0,27.0,1.5,"light,breakfast,low-calorie",breakfast,weight_loss
+Upma,Vegetarian,180,5.0,30.0,6.0,"semolina,breakfast",breakfast,weight_loss
+Boiled Egg,Non-Vegetarian,70,6.0,1.0,5.0,"protein-rich,breakfast",breakfast,weight_loss
+Vegetable Dalia,Vegetarian,160,5.0,28.0,3.0,"high-fiber,breakfast",breakfast,weight_loss
+Brown Rice,Vegetarian,112,2.6,23.0,0.9,"complex-carb,staple",lunch,weight_loss
+Toor Dal,Vegetarian,180,9.0,30.0,1.0,"high-protein,legume",lunch,weight_loss
+Grilled Paneer,Vegetarian,200,14.0,5.0,12.0,"high-protein,main",lunch,weight_loss
+Chicken Salad,Non-Vegetarian,180,20.0,5.0,8.0,"protein-rich,low-fat",lunch,weight_loss
+Cucumber,Vegetarian,16,0.7,3.6,0.1,"vegetable,low-calorie",dinner,weight_loss
+Tomato,Vegetarian,18,0.9,3.9,0.2,"vegetable,low-calorie",dinner,weight_loss
+Grilled Fish,Non-Vegetarian,220,25.0,0.0,12.0,"protein-rich,low-fat",dinner,weight_loss
+Paratha with Paneer,Vegetarian,300,12.0,40.0,15.0,"high-calorie,breakfast",breakfast,weight_gain
+Masala Dosa,Vegetarian,250,6.0,45.0,8.0,"high-carb,breakfast",breakfast,weight_gain
+White Rice,Vegetarian,130,2.5,28.0,0.3,"staple,carb",lunch,weight_gain
+Chicken Curry,Non-Vegetarian,250,20.0,5.0,15.0,"protein-rich,main",lunch,weight_gain
+Paneer Butter Masala,Vegetarian,300,14.0,15.0,20.0,"rich,main",lunch,weight_gain
+Dal Makhani,Vegetarian,220,12.0,25.0,10.0,"high-protein,curry",dinner,weight_gain
+Grilled Chicken,Non-Vegetarian,250,25.0,0.0,12.0,"protein-rich,main",dinner,weight_gain
+Idli,Vegetarian,39,1.2,8.0,0.4,"low-fat,breakfast",breakfast,body_recomp
+Scrambled Eggs,Non-Vegetarian,140,12.0,2.0,10.0,"protein-rich,breakfast",breakfast,body_recomp
+Chapati,Vegetarian,120,3.0,25.0,0.5,"staple,complex-carb",lunch,body_recomp
+Mixed Vegetable Sabzi,Vegetarian,120,4.0,18.0,5.0,"vegetable,healthy",lunch,body_recomp
+Grilled Fish,Non-Vegetarian,220,25.0,0.0,12.0,"protein-rich,main",lunch,body_recomp
+Paneer Bhurji,Vegetarian,200,14.0,8.0,15.0,"high-protein,main",dinner,body_recomp
+Steamed Vegetables,Vegetarian,50,2.0,10.0,0.5,"low-calorie,healthy",dinner,body_recomp
+Grilled Chicken,Non-Vegetarian,250,25.0,0.0,12.0,"protein-rich,main",dinner,body_recomp

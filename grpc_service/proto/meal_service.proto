@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package mealplanner;
+
+// ============================================================
+// SERVICE DEFINITION
+// ============================================================
+// MealService allows a gRPC client to request nutrition
+// information for a given food/meal name.
+// The server looks up the food in the Meal Planner datasets
+// and returns calories, protein, carbs, and fat along with
+// a Lamport logical clock timestamp to enable distributed
+// event ordering.
+
+service MealService {
+    rpc GetMealNutrition(MealRequest) returns (MealResponse);
+}
+
+
+// ============================================================
+// REQUEST MESSAGE
+// ============================================================
+// Sent by the client to request nutrition data.
+// lamport_timestamp carries the client's Lamport clock value
+// so the server can update its own clock accordingly.
+
+message MealRequest {
+    string meal_name        = 1;
+    int64  lamport_timestamp = 2;
+}
+
+
+// ============================================================
+// RESPONSE MESSAGE
+// ============================================================
+// Returned by the server with nutrition values.
+// lamport_timestamp carries the server's updated Lamport clock.
+// status is "SUCCESS" or "NOT_FOUND".
+
+message MealResponse {
+    string meal_name        = 1;
+    double calories         = 2;
+    double protein          = 3;
+    double carbs            = 4;
+    double fat              = 5;
+    int64  lamport_timestamp = 6;
+    string status           = 7;
+}

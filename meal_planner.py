@@ -83,10 +83,14 @@ def build_meal(df, target_calories):
     # If still under target, adjust first item's calories to match
     if items and total_cal < target_calories:
         diff = target_calories - total_cal
+        # Bug 4 Fix: calculate scale factor BEFORE adding diff to calories
+        # to avoid dividing by the already-inflated value
+        original_cal = items[0]["calories"]
         items[0]["calories"] += diff
-        # Adjust macros proportionally
-        for key in ["protein", "carbs", "fat", "fiber", "calcium", "iron"]:
-            items[0][key] = round(items[0][key] * (1 + diff / items[0]["calories"]), 1)
+        if original_cal > 0:
+            scale = 1 + diff / original_cal
+            for key in ["protein", "carbs", "fat", "fiber", "calcium", "iron"]:
+                items[0][key] = round(items[0][key] * scale, 1)
 
     return items
 

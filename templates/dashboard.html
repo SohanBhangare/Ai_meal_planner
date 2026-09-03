@@ -70,7 +70,8 @@
     <div class="container">
         <h1>Welcome, {{ user.username }}</h1>
         <h2>Daily Summary ({{ today }})</h2>
-        <p class="summary-text"><strong>Calories Consumed: {{ total_calories }} kcal / Goal: {{ calorie_goal }} kcal</strong></p>
+        <p class="summary-text"><strong>Calories Consumed: {{ total_calories }} kcal / Today's Goal: {{ calorie_goal }} kcal</strong></p>
+        <p class="summary-text"><em>Tomorrow's adaptive goal: <strong>{{ next_day_goal }} kcal</strong></em></p>
 
         <p class="summary-text">
             {% if total_calories < calorie_goal %}
@@ -174,23 +175,21 @@
             {% endfor %}
         </div>
 
-        <!-- Daily Stats -->
-        <h3>Daily Stats</h3>
+        <!-- Bug 6 Fix: single form submits BOTH water and steps together so neither resets -->
         <div class="stats">
-            <div class="stat-box">
-                <h4>Water Intake (ml)</h4>
-                <form action="{{ url_for('update_stats') }}" method="POST">
+            <form action="{{ url_for('update_stats') }}" method="POST" style="display:contents;">
+                <div class="stat-box">
+                    <h4>Water Intake (ml)</h4>
                     <input type="number" name="water_intake" value="{{ stats.water_intake|default(0) }}" min="0">
-                    <button type="submit">Update</button>
-                </form>
-            </div>
-            <div class="stat-box">
-                <h4>Steps</h4>
-                <form action="{{ url_for('update_stats') }}" method="POST">
+                </div>
+                <div class="stat-box">
+                    <h4>Steps</h4>
                     <input type="number" name="steps" value="{{ stats.steps|default(0) }}" min="0">
-                    <button type="submit">Update</button>
-                </form>
-            </div>
+                </div>
+                <div style="flex:1 1 100%; text-align:center; margin-top:10px;">
+                    <button type="submit" style="max-width:200px;">Update Stats</button>
+                </div>
+            </form>
         </div>
 
         <!-- Calendar -->
